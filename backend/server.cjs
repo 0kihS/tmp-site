@@ -1,19 +1,25 @@
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
+const cors = require('cors');
 
 const app = express();
 const uri = ""; // Replace with your URI
+
+app.use(cors({
+  origin: 'https://effective-space-broccoli-xgpg7p9766v3pjq7-5173.app.github.dev/', // Replace with your actual frontend URL
+  credentials: true, // Allow cookies for authentication
+}));
 
 async function connectToDB() {
   const client = await MongoClient.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
   const db = client.db("mechanical-mokey-db");
   const cardsCollection = db.collection("cards");
-  console.log('cardsCollection');
+  console.log(cardsCollection);
   return cardsCollection;
 }
 
 app.get('/search', async (req, res) => {
-  console.log('api call made')
+  console.log('api call made');
   const { name, level, cardtype, type, attribute, atk, def, set, img, effect, limit } = req.query;
   const searchQuery = {};
 

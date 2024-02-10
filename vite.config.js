@@ -5,19 +5,13 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   server: {
-    middleware: [
-      {
-        path: '/api', // Adjust the path as needed
-        handle: (req, res) => {
-          // Redirect API requests to your server.cjs script
-          // assuming it exposes an Express app
-          const expressApp = require('./backend/server.cjs'); // You might need to adjust the path
-          expressApp(req, res);
-        },
+    proxy: {
+      '/search': {
+        target: 'https://effective-space-broccoli-xgpg7p9766v3pjq7-3000.app.github.dev/', // Replace with your actual backend port
+        changeOrigin: true,
       },
-    ],
-  },
+    },
   build: {
     outDir: 'dist', // Optional: output directory for production build
   },
-});
+}});

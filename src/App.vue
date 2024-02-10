@@ -48,22 +48,31 @@ export default {
   },
   methods: {
     async searchCards() {
-      this.searching = true;
-      this.cards = []; // Clear previous results
-      try {
-        const response = await fetch('/search', {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(this.searchQuery),
-        });
-        this.cards = await response.json();
-      } catch (error) {
-        console.error('Error fetching cards:', error);
-        // Handle error gracefully in UI (e.g., display an error message)
-      } finally {
-        this.searching = false;
+  this.searching = true;
+  this.cards = []; // Clear previous results
+
+  try {
+    // Build query string based on searchQuery
+    let queryString = '';
+    Object.entries(this.searchQuery).forEach(([key, value]) => {
+      if (value) {
+        queryString += `${key}=${encodeURIComponent(value)}&`;
       }
-    },
+    });
+    queryString = queryString.slice(0, -1); // Remove trailing &
+
+    // Make the GET request with query string
+    const response = await fetch(`/search?${queryString}`, {
+      method: 'GET',
+    });
+    this.cards = await response.json();
+  } catch (error) {
+    console.error('Error fetching cards:', error);
+    // Handle error gracefully in UI
+  } finally {
+    this.searching = false;
+  }
+},
   },
 };
 </script>
