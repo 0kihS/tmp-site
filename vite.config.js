@@ -1,22 +1,23 @@
-import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
-import checker from 'vite-plugin-checker';
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
+// https://vitejs.dev/config/
 export default defineConfig({
-    plugins: [
-        vue(),
-        checker({
-          // Optional plugin configuration options
-        }),
-      ],
-  build: {
-    outDir: 'public', // Output directory for build files
-    emptyOutDir: true, // Clear existing content before building
-    rollupOptions: {
-      input: 'client/App.vue', // Entry point for the apps
-    },
-  },
+  plugins: [vue()],
   server: {
-    open: true, // Open browser automatically on dev server start
+    middleware: [
+      {
+        path: '/api', // Adjust the path as needed
+        handle: (req, res) => {
+          // Redirect API requests to your server.cjs script
+          // assuming it exposes an Express app
+          const expressApp = require('./backend/server.cjs'); // You might need to adjust the path
+          expressApp(req, res);
+        },
+      },
+    ],
+  },
+  build: {
+    outDir: 'dist', // Optional: output directory for production build
   },
 });
