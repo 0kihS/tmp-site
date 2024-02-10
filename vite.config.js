@@ -1,15 +1,19 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import checker from 'vite-plugin-checker';
 
 export default defineConfig({
-  plugins: [vue()],
+    plugins: [
+        vue(),
+        checker({
+          // Optional plugin configuration options
+        }),
+      ],
   build: {
     outDir: 'public', // Output directory for build files
     emptyOutDir: true, // Clear existing content before building
     rollupOptions: {
-      input: 'client/App.vue', // Entry point for the app
-      chunkFileNames: 'chunks/[name]-[hash].js', // Customize chunk filenames
-      assetFileNames: '[name]-[hash].[ext]', // Customize asset filenames
+      input: 'client/App.vue', // Entry point for the apps
     },
   },
   server: {
