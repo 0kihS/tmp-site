@@ -1,9 +1,15 @@
+const cors = require('cors');
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
 require('dotenv').config;
 
+
 const app = express();
 const uri = process.env.MONGO_URI; // Replace with your URI
+
+app.use(cors({
+  origin: 'https://mechanical-mokey.onrender.com/' // Allowed origin
+}));
 
 async function connectToDB() {
   const client = await MongoClient.connect(uri);
