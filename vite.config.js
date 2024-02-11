@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/search': {
-        target: 'http://localhost:3000', // Replace with your actual backend port
+        target: 'https://mechanical-mokey-backend.onrender.com/', // Replace with your actual backend port
         changeOrigin: true,
       },
     },
