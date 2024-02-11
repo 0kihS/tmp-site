@@ -1,10 +1,11 @@
 <template>
-  <div id="app">
-    <h1>Card Search</h1>
-    <form @submit.prevent="searchCards">
+ <div id="app">
+  <h1>Card Search</h1>
+  <form @submit.prevent="searchCards">
+    <div class="search-bar">
       <div class="search-field">
         <label for="name">Name:</label>
-        <input type="text" id="name" v-model="searchQuery.name" placeholder="Enter card name">
+        <input type="text" id="name" v-model.trim="searchQuery.name" placeholder="Enter card name">
       </div>
       <div class="search-field">
         <label for="level">Level:</label>
@@ -17,18 +18,21 @@
           <option v-for="type in cardTypes" :key="type">{{ type }}</option>
         </select>
       </div>
-      <button type="submit">Search</button>
-    </form>
+    </div>
+    <button type="submit">Search</button>
+  </form>
     <div v-if="searching" class="loading">Loading...</div>
     <div v-else-if="cards.length">
       <h2>Results</h2>
       <ul class="card-list">
         <li v-for="card in cards" :key="card._id">
           <div class="card-info">
-            <h3>{{ card.name }}</h3>
-            <p>Level: {{ card.level }}</p>
+            <h3>{{ card.name }} </h3>
+            <p>Level: {{ card.level }}</p> 
+            <p>Attribute: {{ card.attribute }}</p>
+            <p>{{ card.effect }}</p>
             </div>
-          <img v-if="card.img" :src="card.img" alt="{{ card.name }}">
+          <img v-if="card.image" :src="card.image" alt="{{ card.name }}">
         </li>
       </ul>
     </div>
@@ -78,5 +82,4 @@ export default {
 </script>
 
 <style scoped>
-/* Add basic styling for your app as needed */
 </style>

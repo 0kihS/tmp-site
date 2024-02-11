@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/search': {
-        target: 'https://effective-space-broccoli-xgpg7p9766v3pjq7-3000.app.github.dev/', // Replace with your actual backend port
+        target: 'http://localhost:3000', // Replace with your actual backend port
         changeOrigin: true,
       },
     },
