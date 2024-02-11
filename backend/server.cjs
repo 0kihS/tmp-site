@@ -8,7 +8,7 @@ const app = express();
 const uri = process.env.MONGO_URI; // Replace with your URI
 
 app.use(cors({
-  origin: 'https://mechanical-mokey.onrender.com/' // Allowed origin
+  origin: 'https://mechanical-mokey.onrender.com' // Allowed origin
 }));
 
 async function connectToDB() {
