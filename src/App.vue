@@ -66,7 +66,7 @@ export default {
     queryString = queryString.slice(0, -1); // Remove trailing &
 
     // Make the GET request with query string
-    const response = await fetch(`/search?${queryString}`, {
+    const response = await fetch(`https://mechanical-mokey-backend.onrender.com/search?${queryString}`, {
       method: 'GET',
     });
     this.cards = await response.json();
