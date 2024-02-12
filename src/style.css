@@ -110,42 +110,38 @@ button:hover {
 
 /* Card styles */
 
-ul.card-list {
-    display: flex;
-    flex-wrap: wrap;
-    list-style: none; /* Remove default bullet points */
-    padding: 0; /* Remove default padding */
-    position: relative; /* Needed for hover effects */
-  
+.card {
+  background: linear-gradient(49deg, #2d4de0 0, #9f71f0 30%, #fc6277 58%, #f8ef6f 95%);
+
+  width: 380px;
+  height: 350px;
+
+  border-radius: 12px;
+
+  position: relative;
 }
 
-ul.card-list li {
-  /* Adjust margin and padding for spacing */
-  border-radius: 8px; /* Add rounded corners */
-  /* Adjust margin and padding as needed for spacing */
-  margin: 1rem;
-  padding: 1rem;
-  background-color: var(--bg-light); /* Use variable for theme switch */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
-  width: 25vw;
-  /* ... other styles you have for the card-item div */
-}
-
-ul.card-list img {
-  width: 25vw;
-}
-
-
-ul.card-list li::hover {
-  content: "";
+.card-container {
   position: absolute;
   top: 0;
+  bottom: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  transition: box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+  right: 0;
+
+  padding: 50px 40px;
+
+  background-color: #222222;
+  color: #ffffff;
+
+  border-radius: 12px;
+
+  transition: 0.2s ease;
 }
 
-
-
+.card:hover .card-container {
+  border-radius: 10px;
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  right: 3px;
+}

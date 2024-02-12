@@ -24,17 +24,16 @@
     <div v-if="searching" class="loading">Loading...</div>
     <div v-else-if="cards.length">
       <h2>Results</h2>
-      <ul class="card-list">
-        <li v-for="card in cards" :key="card._id">
-          <div class="card-info">
+          <div class="card-info" v-for="card in cards" :key="card._id">
+            <div class ="card">
             <h3>{{ card.name }} </h3>
             <p>Level: {{ card.level }}</p> 
             <p>Attribute: {{ card.attribute }}</p>
             <p>{{ card.effect }}</p>
+            <img v-if="card.image" :src="card.image" alt="{{ card.name }}">
             </div>
-          <img v-if="card.image" :src="card.image" alt="{{ card.name }}">
-        </li>
-      </ul>
+            </div>
+
     </div>
     <div v-else>No cards found matching your criteria.</div>
   </div>
