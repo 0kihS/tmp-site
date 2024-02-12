@@ -24,8 +24,8 @@
     <div v-if="searching" class="loading">Loading...</div>
     <div v-else-if="cards.length">
       <h2>Results</h2>
-          <div class="card-info" v-for="card in cards" :key="card._id">
-            <div class ="card">
+          <div class="card" v-for="card in cards" :key="card._id">
+            <div class ="card-container">
             <h3>{{ card.name }} </h3>
             <p>Level: {{ card.level }}</p> 
             <p>Attribute: {{ card.attribute }}</p>
