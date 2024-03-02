@@ -1,84 +1,141 @@
-<template>
- <div id="app">
-  <h1>Card Search</h1>
-  <form @submit.prevent="searchCards">
-    <div class="search-bar">
-      <div class="search-field">
-        <label for="name">Name:</label>
-        <input type="text" id="name" v-model.trim="searchQuery.name" placeholder="Enter card name">
-      </div>
-      <div class="search-field">
-        <label for="level">Level:</label>
-        <input type="number" id="level" v-model.number="searchQuery.level" placeholder="Enter level">
-      </div>
-      <div class="search-field">
-        <label for="cardtype">Card Type:</label>
-        <select id="cardtype" v-model="searchQuery.cardtype">
-          <option value="">Any</option>
-          <option v-for="type in cardTypes" :key="type">{{ type }}</option>
-        </select>
-      </div>
-    </div>
-    <button type="submit">Search</button>
-  </form>
-    <div v-if="searching" class="loading">Loading...</div>
-    <div v-else-if="cards.length">
-      <h2>Results</h2>
-          <div class="card" v-for="card in cards" :key="card._id">
-            <div class ="card-container">
-            <h3>{{ card.name }} </h3>
-            <p>Level: {{ card.level }}</p> 
-            <p>Attribute: {{ card.attribute }}</p>
-            <p>{{ card.effect }}</p>
-            <img v-if="card.image" :src="card.image" alt="{{ card.name }}">
-            </div>
-            </div>
+<script setup lang="ts">
+import { useForm } from 'vee-validate'
+import { Check, ChevronsUpDown } from 'lucide-vue-next'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 
-    </div>
-    <div v-else>No cards found matching your criteria.</div>
-  </div>
-</template>
+const attributes = [
+{ value: 'earth', label: 'EARTH' },
+  { value: 'fire', label: 'FIRE' },
+  { value: 'water', label: 'WATER' },
+  { value: 'wind', label: 'WIND' },
+  { value: 'light', label: 'LIGHT' },
+  { value: 'dark', label: 'DARK' },
+]
 
-<script>
-export default {
-  data() {
-    return {
-      cardTypes: ["Monster", "Spell", "Trap"], // Adjust based on your card types
-      searchQuery: {},
-      cards: [],
-      searching: false,
-    };
-  },
-  methods: {
-    async searchCards() {
-  this.searching = true;
-  this.cards = []; // Clear previous results
+const { handleSubmit, setValues, values } = useForm()
 
+const onSubmit = handleSubmit(async (values) => {
+  let queryString = ''
   try {
-    // Build query string based on searchQuery
-    let queryString = '';
-    Object.entries(this.searchQuery).forEach(([key, value]) => {
+    Object.entries(values).forEach(([key, value]) => {
       if (value) {
         queryString += `${key}=${encodeURIComponent(value)}&`;
       }
     });
     queryString = queryString.slice(0, -1); // Remove trailing &
-
-    // Make the GET request with query string
-    const response = await fetch(`https://mechanical-mokey-backend.onrender.com/search?${queryString}`, {
+    console.log(values);
+    const response = await fetch(`/search?${queryString}`, {
       method: 'GET',
+      // Dynamically create query parameters based on form values:
     });
-    this.cards = await response.json();
+
+    if (!response.ok) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    // Handle the retrieved card data here, for example:
+    console.log(data); // Display data for now
+
   } catch (error) {
-    console.error('Error fetching cards:', error);
-    // Handle error gracefully in UI
-  } finally {
-    this.searching = false;
+    // Handle errors gracefully, for example:
+    console.error(error); // Log the error for now
+    // You might want to display an error message to the user
   }
-},
-  },
-};
+});
 </script>
 
-<style scoped>
-</style>
+<template>
+
+  <form class="space-y-6" @submit="onSubmit">
+    <Card class="flex flex-wrap m-2 space-x-2">
+    <FormField v-slot="{ componentField }" name="name">
+      <FormItem>
+        <FormControl>
+          <Input type="text" placeholder="Name" v-bind="componentField" class="m-2" />
+        </FormControl>
+      </FormItem>
+    </FormField>
+    <FormField name="attribute">
+      <FormItem>
+        <Popover>
+          <PopoverTrigger as-child>
+            <FormControl>
+              <Button
+                class="m-2"
+                variant="outline"
+                role="combobox"
+                :class="cn('w-[150px] justify-between', !values.attribute && 'text-muted-foreground')"
+              >
+                {{ values.attribute ? attributes.find(
+                  (attribute) => attribute.value === values.attribute,
+                )?.label : 'Attribute:' }}
+                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </FormControl>
+          </PopoverTrigger>
+          <PopoverContent class="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search Attribute" />
+              <CommandEmpty>Nothing found.</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  <CommandItem
+                    v-for="attribute in attributes"
+                    :key="attribute.value"
+                    :value="attribute.label"
+                    @select="() => {
+                      setValues({
+                        attribute: attribute.value,
+                      })
+                    }"
+                  >
+                    <Check
+                      :class="cn('mr-2 h-4 w-4', attribute.value === values.attribute ? 'opacity-100' : 'opacity-0')"
+                    />
+                    {{ attribute.label }}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
+    <Button type="submit" class="m-2">
+      Submit
+    </Button>
+    
+    
+
+  </Card>
+  </form>
+
+<Toaster />
+
+</template>
