@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+
+const emit = defineEmits<{(data: any[]): void}>()
 import {
   Command,
   CommandEmpty,
@@ -24,6 +26,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { ref } from 'vue'
 
 const attributes = [
 { value: 'earth', label: 'EARTH' },
@@ -35,8 +38,8 @@ const attributes = [
 ]
 
 const { handleSubmit, setValues, values } = useForm()
-
 const onSubmit = handleSubmit(async (values) => {
+
   let queryString = ''
   try {
     Object.entries(values).forEach(([key, value]) => {
@@ -55,9 +58,12 @@ const onSubmit = handleSubmit(async (values) => {
       throw new Error(`API request failed with status ${response.status}`);
     }
 
-    const data = await response.json();
     // Handle the retrieved card data here, for example:
-    console.log(data); // Display data for now
+    
+    let cdata = await response.json()
+    cdata = ref('hi')
+    
+    console.log(cdata);
 
   } catch (error) {
     // Handle errors gracefully, for example:
@@ -65,6 +71,7 @@ const onSubmit = handleSubmit(async (values) => {
     // You might want to display an error message to the user
   }
 });
+
 </script>
 
 <template>
@@ -126,13 +133,9 @@ const onSubmit = handleSubmit(async (values) => {
         <FormMessage />
       </FormItem>
     </FormField>
-
     <Button type="submit" class="m-2">
-      Submit
+      Search
     </Button>
-    
-    
-
   </Card>
   </form>
 
