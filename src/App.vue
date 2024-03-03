@@ -37,7 +37,7 @@ const attributes = [
   { value: 'light', label: 'LIGHT' },
   { value: 'dark', label: 'DARK' },
 ]
-let cdata = ref([{name: "test", attribute: "fire", image: "img}"}])
+let cdata = ref([{name: "test", attribute: "fire", image: "img", effect: "i like sharks :3", id: 1}])
 
 const { handleSubmit, setValues, values } = useForm()
 import { getCurrentInstance } from 'vue'
