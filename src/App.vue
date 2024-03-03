@@ -48,7 +48,7 @@ const onSubmit = handleSubmit(async (values) => {
     });
     queryString = queryString.slice(0, -1); // Remove trailing &
     console.log(values);
-    const response = await fetch(`/search?${queryString}`, {
+    const response = await fetch(`https://mechanical-mokey-backend.onrender.com/search?${queryString}`, {
       method: 'GET',
       // Dynamically create query parameters based on form values:
     });
