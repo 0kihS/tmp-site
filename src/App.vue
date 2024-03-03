@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Toaster } from '@/components/ui/toast'
+import { ref } from 'vue'
 
 const emit = defineEmits<{(data: any[]): void}>()
 import {
@@ -35,45 +37,48 @@ const attributes = [
   { value: 'light', label: 'LIGHT' },
   { value: 'dark', label: 'DARK' },
 ]
+let cdata = ref([{name: "test", attribute: "fire", image: "img}"}])
 
 const { handleSubmit, setValues, values } = useForm()
+import { getCurrentInstance } from 'vue'
+const instance = getCurrentInstance();
+
 const onSubmit = handleSubmit(async (values) => {
 
-  let queryString = ''
-  try {
-    Object.entries(values).forEach(([key, value]) => {
-      if (value) {
-        queryString += `${key}=${encodeURIComponent(value)}&`;
-      }
-    });
-    queryString = queryString.slice(0, -1); // Remove trailing &
-    console.log(values);
-    const response = await fetch(`https://mechanical-mokey-backend.onrender.com/search?${queryString}`, {
-      method: 'GET',
-      // Dynamically create query parameters based on form values:
-    });
-
-    if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+let queryString = ''
+try {
+  Object.entries(values).forEach(([key, value]) => {
+    if (value) {
+      queryString += `${key}=${encodeURIComponent(value)}&`;
     }
+  });
+  queryString = queryString.slice(0, -1); // Remove trailing &
+  console.log(values);
+  const response = await fetch(`/search?${queryString}`, {
+    method: 'GET',
+    // Dynamically create query parameters based on form values:
+  });
 
-    // Handle the retrieved card data here, for example:
-    
-    let cdata = await response.json()
-    
-    console.log(cdata);
-
-  } catch (error) {
-    // Handle errors gracefully, for example:
-    console.error(error); // Log the error for now
-    // You might want to display an error message to the user
+  if (!response.ok) {
+    throw new Error(`API request failed with status ${response.status}`);
   }
-});
 
+  // Handle the retrieved card data here, for example:
+  
+  cdata = ref(await response.json());
+  
+  console.log(cdata);
+  instance?.proxy?.$forceUpdate();
+} catch (error) {
+  // Handle errors gracefully, for example:
+  console.error(error); // Log the error for now
+  // You might want to display an error message to the user
+}
+});
 </script>
 
 <template>
-
+<div>
   <form class="space-y-6" @submit="onSubmit">
     <Card class="flex flex-wrap m-2 space-x-2">
     <FormField v-slot="{ componentField }" name="name">
@@ -136,7 +141,20 @@ const onSubmit = handleSubmit(async (values) => {
     </Button>
   </Card>
   </form>
-
+  
+  <div v-if="cdata.length" class="flex flex-wrap gap-4">
+  <div v-for="card in cdata" :key="card.id" class="flex shadow rounded overflow-hidden h-60 w-1/2">
+    <img :src="card.image" alt="Card Image" class="w-1/3 h-full object-cover shrink-0" />
+    <div class="w-2/3 px-2 py-1 flex flex-col justify-between">
+      <div>
+        <h4 class="text-sm font-medium">{{ card.name }}</h4>
+        <p class="text-sm"> {{ card.effect }}</p>
+        <p class="text-xs text-gray-600">{{ card.attribute }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 <Toaster />
 
 </template>
