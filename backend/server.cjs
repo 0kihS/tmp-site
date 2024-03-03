@@ -1,7 +1,7 @@
 const cors = require('cors');
 const express = require('express');
 const MongoClient = require('mongodb').MongoClient;
-require('dotenv').config;
+require('dotenv').config();
 
 
 const app = express();
@@ -26,10 +26,10 @@ app.get('/search', async (req, res) => {
  if (name) searchQuery.name = { $regex: new RegExp(name, 'i') }; // Case-insensitive search
  if (level) searchQuery.level = parseInt(level);
  if (cardtype) searchQuery.cardtype = cardtype;
- if (type) searchQuery.type = type;
+ if (type) searchQuery.type = { $regex: new RegExp(type, 'i') };
  if (attribute) searchQuery.attribute = attribute;
- if (atk) searchQuery.atk = atk;
- if (def) searchQuery.def = def;
+ if (atk) searchQuery.atk = parseInt(atk);
+ if (def) searchQuery.def = parseInt(def);
  if (set) searchQuery.set = set;
  if (img) searchQuery.img = img;
  if (effect) searchQuery.effect = { $regex: new RegExp(effect, 'i') }; // Case-insensitive search

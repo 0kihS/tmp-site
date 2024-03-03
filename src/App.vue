@@ -37,6 +37,34 @@ const attributes = [
   { value: 'light', label: 'LIGHT' },
   { value: 'dark', label: 'DARK' },
 ]
+
+const types = [
+  { value: "aqua", label: "Aqua" },
+  { value: "beast", label: "Beast" },
+  { value: "beast-warrior", label: "Beast-Warrior" },
+  { value: "cyberse", label: "Cyberse" },
+  { value: "dinosaur", label: "Dinosaur" },
+  { value: "divine-beast", label: "Divine-Beast" },
+  { value: "dragon", label: "Dragon" },
+  { value: "fairy", label: "Fairy" },
+  { value: "fiend", label: "Fiend" },
+  { value: "fish", label: "Fish" },
+  { value: "insect", label: "Insect" },
+  { value: "machine", label: "Machine" },
+  { value: "plant", label: "Plant" },
+  { value: "psychic", label: "Psychic" },
+  { value: "pyro", label: "Pyro" },
+  { value: "reptile", label: "Reptile" },
+  { value: "rock", label: "Rock" },
+  { value: "sea serpent", label: "Sea Serpent" },
+  { value: "spellcaster", label: "Spellcaster" },
+  { value: "thunder", label: "Thunder" },
+  { value: "warrior", label: "Warrior" },
+  { value: "winged-beast", label: "Winged-Beast" },
+  { value: "wyrm", label: "Wyrm" },
+  { value: "zombie", label: "Zombie" }
+];
+
 let cdata = ref([{name: "test", attribute: "fire", image: "img", effect: "i like sharks :3", id: 1}])
 
 const { handleSubmit, setValues, values } = useForm()
@@ -53,8 +81,7 @@ try {
     }
   });
   queryString = queryString.slice(0, -1); // Remove trailing &
-  console.log(values);
-  const response = await fetch(`/search?${queryString}`, {
+  const response = await fetch(`https://mechanical-mokey-backend.onrender.com/search?${queryString}`, {
     method: 'GET',
     // Dynamically create query parameters based on form values:
   });
@@ -136,14 +163,62 @@ try {
         <FormMessage />
       </FormItem>
     </FormField>
+    <FormField name="type">
+      <FormItem>
+        <Popover>
+          <PopoverTrigger as-child>
+            <FormControl>
+              <Button
+                class="m-2"
+                variant="outline"
+                role="combobox"
+                :class="cn('w-[150px] justify-between', !values.type && 'text-muted-foreground')"
+              >
+                {{ values.type ? types.find(
+                  (type) => type.value === values.type,
+                )?.label : 'Type:' }}
+                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </FormControl>
+          </PopoverTrigger>
+          <PopoverContent class="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search Type" />
+              <CommandEmpty>Nothing found.</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  <CommandItem
+                    v-for="type in types"
+                    :key="type.value"
+                    :value="type.label"
+                    @select="() => {
+                      setValues({
+                        type: type.value,
+                      })
+                    }"
+                  >
+                    <Check
+                      :class="cn('mr-2 h-4 w-4', type.value === values.type ? 'opacity-100' : 'opacity-0')"
+                    />
+                    {{ type.label }}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        <FormMessage />
+      </FormItem>
+    </FormField>
     <Button type="submit" class="m-2">
       Search
     </Button>
   </Card>
   </form>
   
-  <div v-if="cdata.length" class="flex flex-wrap gap-4">
-  <div v-for="card in cdata" :key="card.id" class="flex shadow rounded overflow-hidden h-60 w-1/2">
+  <div v-if="cdata.length" class="flex flex-wrap gap-2">
+  <div v-for="card in cdata" :key="card.id" class="flex shadow rounded overflow-hidden h-65 w-1/2">
     <img :src="card.image" alt="Card Image" class="w-1/3 h-full object-cover shrink-0" />
     <div class="w-2/3 px-2 py-1 flex flex-col justify-between">
       <div>
