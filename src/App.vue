@@ -26,7 +26,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { ref } from 'vue'
 
 const attributes = [
 { value: 'earth', label: 'EARTH' },
@@ -61,7 +60,6 @@ const onSubmit = handleSubmit(async (values) => {
     // Handle the retrieved card data here, for example:
     
     let cdata = await response.json()
-    cdata = ref('hi')
     
     console.log(cdata);
 
