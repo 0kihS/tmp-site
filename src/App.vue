@@ -65,7 +65,7 @@ const types = [
   { value: "zombie", label: "Zombie" }
 ];
 
-let cdata = ref([{name: "test", attribute: "fire", image: "img", effect: "i like sharks :3", id: 1}])
+let cdata = ref([{name: "test", attribute: "fire", image: "img", effect: "i like sharks :3", id: 1, cardtype: "", type: "", level: ''}])
 
 const { handleSubmit, setValues, values } = useForm()
 import { getCurrentInstance } from 'vue'
@@ -115,13 +115,27 @@ try {
         </FormControl>
       </FormItem>
     </FormField>
+    <FormField v-slot="{ componentField }" name="effect">
+      <FormItem>
+        <FormControl>
+          <Input type="text" placeholder="Effect" v-bind="componentField" class="m-2" />
+        </FormControl>
+      </FormItem>
+    </FormField>
+    <FormField v-slot="{ componentField }" name="level">
+      <FormItem>
+        <FormControl>
+          <Input type="number" placeholder="Level" v-bind="componentField" class="m-2" />
+        </FormControl>
+      </FormItem>
+    </FormField>
     <FormField name="attribute">
       <FormItem>
         <Popover>
           <PopoverTrigger as-child>
             <FormControl>
               <Button
-                class="m-2"
+                class="ml-2 mt-2"
                 variant="outline"
                 role="combobox"
                 :class="cn('w-[150px] justify-between', !values.attribute && 'text-muted-foreground')"
@@ -159,7 +173,6 @@ try {
             </Command>
           </PopoverContent>
         </Popover>
-
         <FormMessage />
       </FormItem>
     </FormField>
@@ -169,7 +182,7 @@ try {
           <PopoverTrigger as-child>
             <FormControl>
               <Button
-                class="m-2"
+                class="mt-2"
                 variant="outline"
                 role="combobox"
                 :class="cn('w-[150px] justify-between', !values.type && 'text-muted-foreground')"
@@ -217,14 +230,16 @@ try {
   </Card>
   </form>
   
-  <div v-if="cdata.length" class="flex flex-wrap gap-2">
-  <div v-for="card in cdata" :key="card.id" class="flex shadow rounded overflow-hidden h-65 w-1/2">
+  <div v-if="cdata.length" class="flex flex-wrap">
+  <div v-for="card in cdata" :key="card.id" class="flex shadow rounded overflow-hidden h-65 w-5/12 m-2">
     <img :src="card.image" alt="Card Image" class="w-1/3 h-full object-cover shrink-0" />
     <div class="w-2/3 px-2 py-1 flex flex-col justify-between">
       <div>
-        <h4 class="text-sm font-medium">{{ card.name }}</h4>
+        <h4 class="text-sm font-medium">{{ card.name }}
+          <br>
+           {{ card.cardtype }} {{ card.attribute }} <h4 class="inline" v-if="parseInt(card.level) > 0"> {{ 'Level ' + card.level }}</h4></h4>
+        <h4 class="text-sm font-medium">{{ card.type }}</h4> 
         <p class="text-sm"> {{ card.effect }}</p>
-        <p class="text-xs text-gray-600">{{ card.attribute }}</p>
       </div>
     </div>
   </div>
