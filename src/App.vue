@@ -141,6 +141,18 @@ try {
   // You might want to display an error message to the user
 }
 });
+
+const linkArrows = ref<string[]>([]);
+
+const toggleLinkArrow = (direction: string) => {
+  const index = linkArrows.value.indexOf(direction);
+  if (index !== -1) {
+    linkArrows.value.splice(index, 1);
+  } else {
+    linkArrows.value.push(direction);
+  }
+  setValues({ linkArrows: linkArrows.value }); // Update form values
+};
 </script>
 
 <template>
@@ -337,6 +349,59 @@ try {
         </FormControl>
       </FormItem>
     </FormField>
+    <FormItem label="Link Arrows">
+  <Popover>
+    <PopoverTrigger as-child>
+      <Button class="mt-2 ml-2" variant="outline">
+        Link Arrows
+        <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent class="w-[100px] p-0">
+      <div class="grid grid-cols-3 gap-1">
+        <button
+          v-for="direction in ['top-left', 'top', 'top-right']"
+          :key="direction"
+          :class="{
+            'bg-blue-500 text-white': values.linkArrows?.includes(direction),
+            'bg-gray-200 hover:bg-gray-300': !values.linkArrows?.includes(direction),
+          }"
+          @click="toggleLinkArrow(direction)"
+        >
+          <p v-if="direction === 'top-left'">↖&#xFE0E;</p>
+          <p v-if="direction === 'top'">↑</p>
+          <p v-if="direction === 'top-right'">↗</p>
+        </button>
+        <button
+          v-for="direction in ['left', 'middle', 'right']"
+          :key="direction"
+          :class="{
+            'bg-blue-500 text-white': values.linkArrows?.includes(direction),
+            'bg-gray-200 hover:bg-gray-300': !values.linkArrows?.includes(direction),
+          }"
+          @click="toggleLinkArrow(direction)"
+        >
+          <p v-if="direction === 'left'">←</p>
+          <p v-if="direction === 'middle'"> </p>
+          <p v-if="direction === 'right'">→</p>
+        </button>
+        <button
+          v-for="direction in ['bottom-left', 'bottom', 'bottom-right']"
+          :key="direction"
+          :class="{
+            'bg-blue-500 text-white': values.linkArrows?.includes(direction),
+            'bg-gray-200 hover:bg-gray-300': !values.linkArrows?.includes(direction),
+          }"
+          @click="toggleLinkArrow(direction)"
+        >
+          <p v-if="direction === 'bottom-left'">↙</p>
+          <p v-if="direction === 'bottom'">↓</p>
+          <p v-if="direction === 'bottom-right'">↘&#xFE0E;</p>
+        </button>
+      </div>
+    </PopoverContent>
+  </Popover>
+</FormItem>
   </Card>
   </form>
   

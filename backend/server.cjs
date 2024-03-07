@@ -19,7 +19,7 @@ async function connectToDB() {
 }
 
 app.get('/search', async (req, res) => {
-  const { name, level, cardtype, type, attribute, atk, def, set, img, effect, limit, arrows } = req.query;
+  const { name, level, cardtype, type, attribute, atk, def, set, img, effect, limit, linkArrows } = req.query;
   const searchQuery = {};
 
  // Build search query based on provided parameters
@@ -31,7 +31,9 @@ app.get('/search', async (req, res) => {
  if (atk) searchQuery.atk = atk;
  if (def) searchQuery.def = def;
  if (set) searchQuery.set = set;
- if (set) searchQuery.linkArrows = arrows;
+ if (linkArrows) {
+  searchQuery.linkArrows = { $in: linkArrows.split(',') };
+}
  if (img) searchQuery.img = img;
  if (effect) searchQuery.effect = { $regex: new RegExp(effect, 'i') }; // Case-insensitive search
  if (limit) {
