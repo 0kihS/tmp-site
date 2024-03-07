@@ -19,7 +19,7 @@ async function connectToDB() {
 }
 
 app.get('/search', async (req, res) => {
-  const { name, level, cardtype, type, attribute, atk, def, set, img, effect, limit } = req.query;
+  const { name, level, cardtype, type, attribute, atk, def, set, img, effect, limit, arrows } = req.query;
   const searchQuery = {};
 
  // Build search query based on provided parameters
@@ -28,9 +28,10 @@ app.get('/search', async (req, res) => {
  if (cardtype) searchQuery.cardtype = cardtype;
  if (type) searchQuery.type = { $regex: new RegExp(type, 'i') };
  if (attribute) searchQuery.attribute = attribute;
- if (atk) searchQuery.atk = parseInt(atk);
- if (def) searchQuery.def = parseInt(def);
+ if (atk) searchQuery.atk = atk;
+ if (def) searchQuery.def = def;
  if (set) searchQuery.set = set;
+ if (set) searchQuery.linkArrows = arrows;
  if (img) searchQuery.img = img;
  if (effect) searchQuery.effect = { $regex: new RegExp(effect, 'i') }; // Case-insensitive search
  if (limit) {
@@ -41,7 +42,7 @@ app.get('/search', async (req, res) => {
  }
 
  const cardsCollection = await connectToDB();
- const cards = await cardsCollection.find(searchQuery).toArray();
+ const cards = await cardsCollection.find(searchQuery).sort({ name: 1 }).toArray();
  res.json(cards);
 });
 

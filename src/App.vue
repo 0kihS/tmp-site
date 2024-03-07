@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Toaster } from '@/components/ui/toast'
 import { ref } from 'vue'
+import { Ref } from 'vue'
 
 const emit = defineEmits<{(data: any[]): void}>()
 import {
@@ -30,6 +31,7 @@ import {
 } from '@/components/ui/popover'
 
 const attributes = [
+{ value: 'empty', label: ' ' },
 { value: 'earth', label: 'EARTH' },
   { value: 'fire', label: 'FIRE' },
   { value: 'water', label: 'WATER' },
@@ -38,7 +40,15 @@ const attributes = [
   { value: 'dark', label: 'DARK' },
 ]
 
-const types = [
+const cardtypes = [
+{ value: 'empty', label: ' ' },
+{ value: 'Monster', label: 'Monster' },
+  { value: 'Spell', label: 'Spell' },
+  { value: 'Trap', label: 'Trap' },
+]
+
+const types = {Monster: [
+{ value: 'empty', label: ' ' },
   { value: "aqua", label: "Aqua" },
   { value: "beast", label: "Beast" },
   { value: "beast-warrior", label: "Beast-Warrior" },
@@ -63,9 +73,32 @@ const types = [
   { value: "winged-beast", label: "Winged-Beast" },
   { value: "wyrm", label: "Wyrm" },
   { value: "zombie", label: "Zombie" }
-];
+], 
+Spell: [
+{ value: 'normal', label: 'Normal' },
+  { value: 'continuous', label: 'Continuous' },
+  { value: 'quick-play', label: 'Quick-Play' },
+  { value: 'field', label: 'Field' },
+  { value: 'equip', label: 'Equip' },
+  { value: 'ritual', label: 'Ritual' },
+],
+Trap: [
+{ value: 'normal', label: 'Normal' },
+  { value: 'continuous', label: 'Continuous' },
+  { value: 'counter', label: 'Counter'}
+]};
 
-let cdata = ref([{name: "test", attribute: "fire", image: "img", effect: "i like sharks :3", id: 1, cardtype: "", type: "", level: ''}])
+type CardData = {
+  name: string;
+  attribute: string;
+  image: string;
+  effect: string;
+  id: number;
+  cardtype: string; 
+  type: string; 
+  level: string; 
+};
+let cdata: Ref<CardData[]> = ref([]);
 
 const { handleSubmit, setValues, values } = useForm()
 import { getCurrentInstance } from 'vue'
@@ -77,7 +110,13 @@ let queryString = ''
 try {
   Object.entries(values).forEach(([key, value]) => {
     if (value) {
+      if (typeof(value) === 'string'){
+        if (value.includes('empty')){
+      value = '';
+        }
+      }
       queryString += `${key}=${encodeURIComponent(value)}&`;
+      
     }
   });
   queryString = queryString.slice(0, -1); // Remove trailing &
@@ -106,7 +145,7 @@ try {
 
 <template>
 <div>
-  <form class="space-y-6" @submit="onSubmit">
+  <form class="space-y-3" @submit="onSubmit">
     <Card class="flex flex-wrap m-2 space-x-2">
     <FormField v-slot="{ componentField }" name="name">
       <FormItem>
@@ -122,14 +161,115 @@ try {
         </FormControl>
       </FormItem>
     </FormField>
-    <FormField v-slot="{ componentField }" name="level">
+    <FormField name="Cardtype">
+      <FormItem>
+        <Popover>
+          <PopoverTrigger as-child>
+            <FormControl>
+              <Button
+                class="ml-2 mt-2"
+                variant="outline"
+                role="combobox"
+                :class="cn('w-[150px] justify-between', !values.cardtype && 'text-muted-foreground')"
+              >
+                {{ values.cardtype ? cardtypes.find(
+                  (cardtype) => cardtype.value === values.cardtype,
+                )?.label : 'Cardtype:' }}
+                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </FormControl>
+          </PopoverTrigger>
+          <PopoverContent class="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search Cardtype" />
+              <CommandEmpty>Nothing found.</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  <CommandItem
+                    v-for="cardtype in cardtypes"
+                    :key="cardtype.value"
+                    :value="cardtype.label"
+                    @select="() => {
+                      setValues({
+                        cardtype: cardtype.value,
+                      })
+                    }"
+                  >
+                    <Check
+                      :class="cn('mr-2 h-4 w-4', cardtype.value === values.cardtype ? 'opacity-100' : 'opacity-0')"
+                    />
+                    {{ cardtype.label }}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+    <FormField v-slot="{ componentField }" name="passcode">
       <FormItem>
         <FormControl>
-          <Input type="number" placeholder="Level" v-bind="componentField" class="m-2" />
+          <Input type="text" placeholder="Creator" v-bind="componentField" class="mt-2"/>
         </FormControl>
       </FormItem>
     </FormField>
-    <FormField name="attribute">
+
+    <Button type="submit" class="m-2">
+      Search
+    </Button>
+  </Card>
+  <Card v-if="(values.cardtype) && !(values.cardtype === 'empty')" class="flex flex-wrap m-2 pb-2 space-x-2">
+    <FormField name="type">
+      <FormItem>
+        <Popover>
+          <PopoverTrigger as-child>
+            <FormControl>
+              <Button
+                class="mt-2 ml-2"
+                variant="outline"
+                role="combobox"
+                :class="cn('w-[150px] justify-between', !values.type && 'text-muted-foreground')"
+              >
+                {{ values.type ? types[values.cardtype as keyof typeof types].find(
+  (type) => type.value === values.type,
+)?.label : 'Type' }}
+                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </FormControl>
+          </PopoverTrigger>
+          <PopoverContent class="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search Type" />
+              <CommandEmpty>Nothing found.</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  <CommandItem
+                  v-for="type in types[values.cardtype as keyof typeof types]"
+                    :key="type.value"
+                    :value="type.label"
+                    @select="() => {
+                      setValues({
+                        type: type.value,
+                      })
+                    }"
+                  >
+                    <Check
+                      :class="cn('mr-2 h-4 w-4', type.value === values.type ? 'opacity-100' : 'opacity-0')"
+                    />
+                    {{ type.label }}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        <FormMessage />
+      </FormItem>
+    </FormField>
+    <FormField v-if="values.cardtype === 'Monster'" name="attribute">
       <FormItem>
         <Popover>
           <PopoverTrigger as-child>
@@ -142,7 +282,7 @@ try {
               >
                 {{ values.attribute ? attributes.find(
                   (attribute) => attribute.value === values.attribute,
-                )?.label : 'Attribute:' }}
+                )?.label : 'Attribute' }}
                 <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </FormControl>
@@ -176,57 +316,27 @@ try {
         <FormMessage />
       </FormItem>
     </FormField>
-    <FormField name="type">
+    <FormField v-if="values.cardtype === 'Monster'" v-slot="{ componentField }" name="level">
       <FormItem>
-        <Popover>
-          <PopoverTrigger as-child>
-            <FormControl>
-              <Button
-                class="mt-2"
-                variant="outline"
-                role="combobox"
-                :class="cn('w-[150px] justify-between', !values.type && 'text-muted-foreground')"
-              >
-                {{ values.type ? types.find(
-                  (type) => type.value === values.type,
-                )?.label : 'Type:' }}
-                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </FormControl>
-          </PopoverTrigger>
-          <PopoverContent class="w-[200px] p-0">
-            <Command>
-              <CommandInput placeholder="Search Type" />
-              <CommandEmpty>Nothing found.</CommandEmpty>
-              <CommandList>
-                <CommandGroup>
-                  <CommandItem
-                    v-for="type in types"
-                    :key="type.value"
-                    :value="type.label"
-                    @select="() => {
-                      setValues({
-                        type: type.value,
-                      })
-                    }"
-                  >
-                    <Check
-                      :class="cn('mr-2 h-4 w-4', type.value === values.type ? 'opacity-100' : 'opacity-0')"
-                    />
-                    {{ type.label }}
-                  </CommandItem>
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-
-        <FormMessage />
+        <FormControl>
+          <Input type="number" placeholder="Level/Rank/Link" v-bind="componentField" class="ml-2 mt-2 w-40" />
+        </FormControl>
       </FormItem>
     </FormField>
-    <Button type="submit" class="m-2">
-      Search
-    </Button>
+    <FormField v-if="values.cardtype === 'Monster'" v-slot="{ componentField }" name="atk">
+      <FormItem>
+        <FormControl>
+          <Input type="number" placeholder="ATK" v-bind="componentField" class="ml-2 mt-2 w-20" />
+        </FormControl>
+      </FormItem>
+    </FormField>
+    <FormField v-if="values.cardtype === 'Monster'" v-slot="{ componentField }" name="def">
+      <FormItem>
+        <FormControl>
+          <Input type="number" placeholder="DEF" v-bind="componentField" class="ml-2 mt-2 w-20" />
+        </FormControl>
+      </FormItem>
+    </FormField>
   </Card>
   </form>
   
@@ -237,7 +347,7 @@ try {
       <div>
         <h4 class="text-sm font-medium">{{ card.name }}
           <br>
-           {{ card.cardtype }} {{ card.attribute }} <h4 class="inline" v-if="parseInt(card.level) > 0"> {{ 'Level ' + card.level }}</h4></h4>
+           {{ card.cardtype }} {{ card.attribute }} <h4 class="inline" v-if="card.type.includes('XYZ')"> {{ 'Rank ' + card.level }}</h4><h4 class="inline" v-else-if="card.type.includes('LINK')"> {{ 'LINK-' + card.level }}</h4><h4 class="inline" v-else-if="card.level"> {{ 'Level ' + card.level }}</h4></h4>
         <h4 class="text-sm font-medium">{{ card.type }}</h4> 
         <p class="text-sm"> {{ card.effect }}</p>
       </div>
