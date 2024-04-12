@@ -1,9 +1,6 @@
 {
   "version": 2,
   "name": "card-search-api",
-  "builds": [
-    { "src": "server.cjs", "use": "@vercel/node" }
-  ],
   "routes": [
     { "src": "/(.*)", "dest": "/server.cjs" }
   ]
