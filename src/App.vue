@@ -9,9 +9,6 @@ import { Toaster } from '@/components/ui/toast'
 import { ref } from 'vue'
 import { Ref } from 'vue'
 
-
-let backend_url = import.meta.env.BACKEND_URL;
-
 const emit = defineEmits<{(data: any[]): void}>()
 import {
   Command,
@@ -123,7 +120,7 @@ try {
     }
   });
   queryString = queryString.slice(0, -1); // Remove trailing &
-  const response = await fetch(`${backend_url + queryString}`, {
+  const response = await fetch(`https://tmp-site-beta.vercel.app/search?${queryString}`, {
     method: 'GET',
     // Dynamically create query parameters based on form values:
   });
