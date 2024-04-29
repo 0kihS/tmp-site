@@ -30,7 +30,7 @@ app.get('/search', async (req, res) => {
  
  let regexString = "";
  
- if (edtype) {
+ if (category) {
    regexString += `(?=.*${category})`; 
  }
  
@@ -42,7 +42,7 @@ app.get('/search', async (req, res) => {
    regexString += `(?=.*${type})`;
  }
 
- if (type || edtype || ability) {
+ if (type || category || ability) {
   searchQuery.type = { $regex: new RegExp(regexString, "i") };
   console.log(searchQuery.type);
  }
