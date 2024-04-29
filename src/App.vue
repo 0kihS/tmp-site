@@ -153,6 +153,22 @@ const toggleLinkArrow = (direction: string) => {
   }
   setValues({ linkArrows: linkArrows.value }); // Update form values
 };
+
+const getLinkArrowDisplay = (card: CardData) => {
+  // Check if card is a Link Monster
+  if (card.type?.includes('LINK')) {
+    const displayedArrows = [];
+    // Loop through all 8 directions
+    for (const direction of ['top-left', 'top', 'top-right', 'left', 'right', 'bottom-left', 'bottom', 'bottom-right']) {
+      // Check if the direction is a Link Arrow for this monster
+      if (card.effect.includes(direction)) { // Modify this line to check for Link Arrows in the effect text based on your data source
+        displayedArrows.push(direction);
+      }
+    }
+    return displayedArrows.join(', ');
+  }
+  return '';
+};
 </script>
 
 <template>
@@ -408,6 +424,11 @@ const toggleLinkArrow = (direction: string) => {
   <div v-for="card in cdata" :key="card.id" class="flex shadow rounded overflow-hidden h-65 w-5/12 m-2">
     <img :src="card.image" alt="Card Image" class="w-1/3 h-full object-cover shrink-0" />
     <div class="w-2/3 px-2 py-1 flex flex-col justify-between">
+      <div v-if="values.cardtype === 'Monster'">
+    <FormItem label="Link Arrows">
+      <span class="text-sm">{{ getLinkArrowDisplay(card) }}</span>
+    </FormItem>
+    </div>
       <div>
         <h4 class="text-sm font-medium">{{ card.name }}
           <br>
