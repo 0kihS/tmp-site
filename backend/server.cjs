@@ -32,7 +32,7 @@ app.get('/search', async (req, res) => {
  if (def) searchQuery.def = def;
  if (set) searchQuery.set = set;
  if (linkArrows) {
-  searchQuery.linkArrows = { $in: linkArrows.split(',') };
+  searchQuery.linkArrows = { $elemMatch: { $in: linkArrows.split(',') } };
 }
  if (img) searchQuery.img = img;
  if (effect) searchQuery.effect = { $regex: new RegExp(effect, 'i') }; // Case-insensitive search
