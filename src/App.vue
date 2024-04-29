@@ -186,7 +186,7 @@ const toggleLinkArrow = (direction: string) => {
               >
                 {{ values.cardtype ? cardtypes.find(
                   (cardtype) => cardtype.value === values.cardtype,
-                )?.label : 'Cardtype:' }}
+                )?.label : 'Cardtype' }}
                 <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </FormControl>
@@ -354,7 +354,6 @@ const toggleLinkArrow = (direction: string) => {
     <PopoverTrigger as-child>
       <Button class="mt-2 ml-2" variant="outline">
         Link Arrows
-        <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </Button>
     </PopoverTrigger>
     <PopoverContent class="w-[100px] p-0">
