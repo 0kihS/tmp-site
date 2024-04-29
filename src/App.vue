@@ -10,7 +10,7 @@ import { ref } from 'vue'
 import { Ref } from 'vue'
 
 
-let backend_url = import.meta.BACKEND_URL;
+let backend_url = import.meta.env.BACKEND_URL;
 
 const emit = defineEmits<{(data: any[]): void}>()
 import {
