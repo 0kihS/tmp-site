@@ -19,7 +19,7 @@ async function connectToDB() {
 }
 
 app.get('/search', async (req, res) => {
-  const { name, level, cardtype, type, edtype, attribute, atk, def, set, img, effect, limit, linkArrows, ability } = req.query;
+  const { name, level, cardtype, type, category, attribute, atk, def, set, img, effect, limit, linkArrows, ability } = req.query;
   const searchQuery = {};
 
  // Build search query based on provided parameters
