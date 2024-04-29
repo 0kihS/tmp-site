@@ -19,14 +19,33 @@ async function connectToDB() {
 }
 
 app.get('/search', async (req, res) => {
-  const { name, level, cardtype, type, attribute, atk, def, set, img, effect, limit, linkArrows } = req.query;
+  const { name, level, cardtype, type, edtype, attribute, atk, def, set, img, effect, limit, linkArrows, ability } = req.query;
   const searchQuery = {};
 
  // Build search query based on provided parameters
  if (name) searchQuery.name = { $regex: new RegExp(name, 'i') }; // Case-insensitive search
  if (level) searchQuery.level = parseInt(level);
  if (cardtype) searchQuery.cardtype = cardtype;
- if (type) searchQuery.type = { $regex: new RegExp(type, 'i') };
+
+ 
+ let regexString = "";
+ 
+ if (edtype) {
+   regexString += `(?=.*${category})`; 
+ }
+ 
+ if (ability) {
+   regexString += `(?=.*${ability})`; 
+ }
+ 
+ if (type) {
+   regexString += `(?=.*${type})`;
+ }
+
+ if (type || edtype || ability) {
+  searchQuery.type = { $regex: new RegExp(regexString, "i") };
+  console.log(searchQuery.type);
+ }
  if (attribute) searchQuery.attribute = attribute;
  if (atk) searchQuery.atk = atk;
  if (def) searchQuery.def = def;

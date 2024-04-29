@@ -47,6 +47,27 @@ const cardtypes = [
   { value: 'Trap', label: 'Trap' },
 ]
 
+const categories = [
+{ value: 'empty', label: ' ' },
+{ value: 'Effect', label: 'Effect' },
+{ value: 'Ritual', label: 'Ritual' },
+{ value: 'Synchro', label: 'Synchro' },
+  { value: 'XYZ', label: 'XYZ' },
+  { value: 'Fusion', label: 'Fusion' },
+  { value: 'Link', label: 'Link' },
+  { value: 'Pendulum', label: 'Pendulum' },
+]
+
+const abilities = [
+{ value: 'empty', label: ' ' },
+{ value: 'Gemini', label: 'Gemini' },
+{ value: 'Tuner', label: 'Tuner' },
+{ value: 'Spirit', label: 'Spirit' },
+  { value: 'Union', label: 'Union' },
+  { value: 'Non-Effect', label: 'Non-Effect' },
+  { value: 'Toon', label: 'Toon' },
+]
+
 const types = {Monster: [
 { value: 'empty', label: ' ' },
   { value: "aqua", label: "Aqua" },
@@ -153,22 +174,6 @@ const toggleLinkArrow = (direction: string) => {
   }
   setValues({ linkArrows: linkArrows.value }); // Update form values
 };
-
-const getLinkArrowDisplay = (card: CardData) => {
-  // Check if card is a Link Monster
-  if (card.type?.includes('LINK')) {
-    const displayedArrows = [];
-    // Loop through all 8 directions
-    for (const direction of ['top-left', 'top', 'top-right', 'left', 'right', 'bottom-left', 'bottom', 'bottom-right']) {
-      // Check if the direction is a Link Arrow for this monster
-      if (card.effect.includes(direction)) { // Modify this line to check for Link Arrows in the effect text based on your data source
-        displayedArrows.push(direction);
-      }
-    }
-    return displayedArrows.join(', ');
-  }
-  return '';
-};
 </script>
 
 <template>
@@ -249,6 +254,100 @@ const getLinkArrowDisplay = (card: CardData) => {
     </Button>
   </Card>
   <Card v-if="(values.cardtype) && !(values.cardtype === 'empty')" class="flex flex-wrap m-2 pb-2 space-x-2">
+    <FormField v-if="values.cardtype === 'Monster'" name="category">
+      <FormItem>
+        <Popover>
+          <PopoverTrigger as-child>
+            <FormControl>
+              <Button
+                class="ml-2 mt-2"
+                variant="outline"
+                role="combobox"
+                :class="cn('w-[150px] justify-between', !values.category && 'text-muted-foreground')"
+              >
+                {{ values.category ? categories.find(
+                  (category) => category.value === values.category,
+                )?.label : 'Category' }}
+                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </FormControl>
+          </PopoverTrigger>
+          <PopoverContent class="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search Category" />
+              <CommandEmpty>Nothing found.</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  <CommandItem
+                    v-for="category in categories"
+                    :key="category.value"
+                    :value="category.label"
+                    @select="() => {
+                      setValues({
+                        category: category.value,
+                      })
+                    }"
+                  >
+                    <Check
+                      :class="cn('mr-2 h-4 w-4', category.value === values.category ? 'opacity-100' : 'opacity-0')"
+                    />
+                    {{ category.label }}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+    <FormField v-if="values.cardtype === 'Monster'" name="ability">
+      <FormItem>
+        <Popover>
+          <PopoverTrigger as-child>
+            <FormControl>
+              <Button
+                class="ml-2 mt-2"
+                variant="outline"
+                role="combobox"
+                :class="cn('w-[150px] justify-between', !values.ability && 'text-muted-foreground')"
+              >
+                {{ values.ability ? categories.find(
+                  (ability) => ability.value === values.ability,
+                )?.label : 'Ability' }}
+                <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </FormControl>
+          </PopoverTrigger>
+          <PopoverContent class="w-[200px] p-0">
+            <Command>
+              <CommandInput placeholder="Search Ability" />
+              <CommandEmpty>Nothing found.</CommandEmpty>
+              <CommandList>
+                <CommandGroup>
+                  <CommandItem
+                    v-for="ability in abilities"
+                    :key="ability.value"
+                    :value="ability.label"
+                    @select="() => {
+                      setValues({
+                        ability: ability.value,
+                      })
+                    }"
+                  >
+                    <Check
+                      :class="cn('mr-2 h-4 w-4', ability.value === values.ability ? 'opacity-100' : 'opacity-0')"
+                    />
+                    {{ ability.label }}
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+        <FormMessage />
+      </FormItem>
+    </FormField>
     <FormField name="type">
       <FormItem>
         <Popover>
@@ -424,11 +523,6 @@ const getLinkArrowDisplay = (card: CardData) => {
   <div v-for="card in cdata" :key="card.id" class="flex shadow rounded overflow-hidden h-65 w-5/12 m-2">
     <img :src="card.image" alt="Card Image" class="w-1/3 h-full object-cover shrink-0" />
     <div class="w-2/3 px-2 py-1 flex flex-col justify-between">
-      <div v-if="values.cardtype === 'Monster'">
-    <FormItem label="Link Arrows">
-      <span class="text-sm">{{ getLinkArrowDisplay(card) }}</span>
-    </FormItem>
-    </div>
       <div>
         <h4 class="text-sm font-medium">{{ card.name }}
           <br>
