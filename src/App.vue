@@ -120,7 +120,7 @@ try {
     }
   });
   queryString = queryString.slice(0, -1); // Remove trailing &
-  const response = await fetch(`https://tmp-site-beta.vercel.app/search?${queryString}`, {
+  const response = await fetch(`${process.env.BACKEND_URL + queryString}`, {
     method: 'GET',
     // Dynamically create query parameters based on form values:
   });

@@ -6,9 +6,10 @@ require('dotenv').config();
 
 const app = express();
 const uri = process.env.MONGO_URI; // Replace with your URI
+const frontend_url = process.env.FRONTEND_URL;;
 
 app.use(cors({
-  origin: 'https://mechanical-mokey.onrender.com' // Allowed origin
+  origin: frontend_url // Allowed origin
 }));
 
 async function connectToDB() {
