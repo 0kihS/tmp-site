@@ -6,10 +6,9 @@ require('dotenv').config();
 
 const app = express();
 const uri = process.env.MONGO_URI; // Replace with your URI
-const frontend_url = 'https://mokeypalace.vercel.app';
 
 app.use(cors({
-  origin: frontend_url // Allowed origin
+  origin: 'https://mokeypalace.vercel.app' // Allowed origin
 }));
 
 async function connectToDB() {
