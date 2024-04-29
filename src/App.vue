@@ -464,7 +464,7 @@ const toggleLinkArrow = (direction: string) => {
         </FormControl>
       </FormItem>
     </FormField>
-    <FormItem label="Link Arrows">
+    <FormItem v-if="values.cardtype === 'Monster'" label="Link Arrows">
   <Popover>
     <PopoverTrigger as-child>
       <Button class="mt-2 ml-2" variant="outline">
