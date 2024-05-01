@@ -526,8 +526,8 @@ const toggleLinkArrow = (direction: string) => {
       <div>
         <h4 class="text-sm font-medium">{{ card.name }}
           <br>
-           {{ card.cardtype }} {{ card.attribute }} <h4 class="inline" v-if="card.type.includes('XYZ')"> {{ 'Rank ' + card.level }}</h4><h4 class="inline" v-else-if="card.type.includes('LINK')"> {{ 'LINK-' + card.level }}</h4><h4 class="inline" v-else-if="card.level"> {{ 'Level ' + card.level }}</h4></h4>
-        <h4 class="text-sm font-medium">{{ card.type }}</h4> 
+           {{ card.cardtype }} {{ card.attribute.toUpperCase() }} <h4 class="inline" v-if="card.type.includes('XYZ')"> {{ 'Rank ' + card.level }}</h4><h4 class="inline" v-else-if="card.type.includes('LINK')"> {{ 'LINK-' + card.level }}</h4><h4 class="inline" v-else-if="card.level"> {{ 'Level ' + card.level }}</h4></h4>
+        <h4 class="text-sm font-medium">{{ card.type.charAt(0).toUpperCase() + card.type.slice(1) }}</h4> 
         <p class="text-sm"> {{ card.effect }}</p>
       </div>
     </div>
