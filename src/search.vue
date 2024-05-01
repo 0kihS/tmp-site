@@ -523,9 +523,9 @@ const toggleLinkArrow = (direction: string) => {
     <img :src="card.image" alt="Card Image" class="w-1/3 h-full object-cover shrink-0" />
     <div class="w-2/3 px-2 py-1 flex flex-col justify-between">
       <div>
-        <h4 class="text-sm font-medium">{{ card.name }}
+        <h4 class="text-sm font-medium">{{ card.name }}</h4>
           <br>
-           {{ card.cardtype }} <h4 v-if="card.attribute">{{ card.attribute.toUpperCase() }}</h4> <h4 class="inline" v-if="card.type.includes('XYZ')"> {{ 'Rank ' + card.level }}</h4><h4 class="inline" v-else-if="card.type.includes('LINK')"> {{ 'LINK-' + card.level }}</h4><h4 class="inline" v-else-if="card.level"> {{ 'Level ' + card.level }}</h4></h4>
+           {{ card.cardtype }} <h4 class="inline" v-if="card.attribute">{{ card.attribute.toUpperCase() }}</h4> <h4 class="inline" v-if="card.type.includes('XYZ')"> {{ 'Rank ' + card.level }}</h4><h4 class="inline" v-else-if="card.type.includes('LINK')"> {{ 'LINK-' + card.level }}</h4><h4 class="inline" v-else-if="card.level"> {{ 'Level ' + card.level }}</h4>
         <h4 v-if="card.type" class="text-sm font-medium">{{ card.type.charAt(0).toUpperCase() + card.type.slice(1) }}</h4> 
         <p class="text-sm"> {{ card.effect }}</p>
       </div>
